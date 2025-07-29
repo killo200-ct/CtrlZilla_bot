@@ -1,19 +1,30 @@
 import asyncio
+import os
+from dotenv import load_dotenv
+
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message
 from aiogram.filters import Command
+from bot.handlers import start, help_cmd, about
+from bot.handlers.ask import ask_command
 
-TOKEN = "8040200513:AAFvdb3hV-I-T-enBW-zWecS-5F5roYYnyM"
+
+load_dotenv()
+TOKEN =os.getenv("TELEGRAM_TOKEN")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-@dp.message(Command("start"))
-async def start_command(message: Message):
-    await message.answer("Привет! Я 1win WorkHelper AI Bot 🚀")
+# Регистрируем команды
+dp.message.register(start.start_command, Command("start"))
+dp.message.register(help_cmd.help_command, Command("help"))
+dp.message.register(about.about_command, Command("about"))
+dp.message.register(ask_command, Command("ask"))
+
 
 async def main():
+    print("🤖 Бот запущен!")
     await dp.start_polling(bot)
 
-if __name__ == "__main__":
+def run_bot():
     asyncio.run(main())
